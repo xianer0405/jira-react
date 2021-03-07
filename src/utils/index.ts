@@ -20,6 +20,7 @@ export const useMount = (callback: () => void) => {
   useEffect(callback, []);
 };
 
+// 添加泛型， 让调用方识别返回值的类型
 export const useDebounce = <T>(value: T, delay?: number): T => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
@@ -33,4 +34,33 @@ export const useDebounce = <T>(value: T, delay?: number): T => {
     };
   }, [value, delay]);
   return debouncedValue;
+};
+
+export const useArray = <T>(initArr: T[]) => {
+  const [value, setValue] = useState(initArr);
+
+  const clear = () => {
+    setValue([]);
+  };
+  const removeIndex = (index: number) => {
+    if (index >= 0) {
+      value.splice(index, 1);
+      setValue([...value]);
+    }
+  };
+
+  const add = (item: T) => {
+    // value.push(item);
+    // setValue(value);
+    // NOTE setValue必须返回一个新的对象， 否则页面不会重新渲染
+    // NOTE 因为react是使用===来比对prev和next的值的
+    setValue([...value, item]);
+  };
+
+  return {
+    value,
+    add,
+    removeIndex,
+    clear,
+  };
 };
