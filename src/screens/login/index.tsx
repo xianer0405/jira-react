@@ -1,19 +1,8 @@
 import React, { FormEvent } from "react";
-const apiUrl = process.env.REACT_APP_API_URL;
+import { useAuth } from "../../context/auth-context";
 
 export const LoginScreen = () => {
-  const login = (param: { username: string; password: string }) => {
-    fetch(`${apiUrl}/login`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(param),
-    }).then(async (resp) => {
-      if (resp.ok) {
-      }
-    });
-  };
+  const { login, user } = useAuth();
 
   // 鸭子类型， 面相接口编程， 而不是面向对象编程
   // FormtEvent支持泛型， 泛型支持默认类型
@@ -25,6 +14,7 @@ export const LoginScreen = () => {
   };
   return (
     <form onSubmit={handleSubmit}>
+      <div>{user ? <span>登陆成功, 用户名: {user?.name}</span> : null}</div>
       <div>
         <label htmlFor="username">用户名</label>
         <input type="text" id={"username"} />

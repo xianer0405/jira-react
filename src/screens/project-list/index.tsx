@@ -10,6 +10,9 @@ const apiUrl = process.env.REACT_APP_API_URL;
 export interface User {
   name: string;
   id: number;
+  email: string;
+  organization: string;
+  token: string;
 }
 
 export interface Project {
