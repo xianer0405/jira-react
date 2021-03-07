@@ -4,6 +4,8 @@ import qs from "qs";
 import { SearchPanel } from "./search-panel";
 import { PrjectList } from "./list";
 import { cleanObject, useDebounce, useMount } from "../../utils";
+import { request, useHttp } from "../../utils/http";
+import { useAuth } from "../../context/auth-context";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -24,6 +26,7 @@ export interface Project {
 }
 
 export const ProjectListScreen = () => {
+  const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
 
   // NOTE 泛型机制，运行前就能识别类型相关的问题， typeof, toString方式都是运行时的类型判断
@@ -35,32 +38,14 @@ export const ProjectListScreen = () => {
   const debouncedParam = useDebounce(param, 400);
 
   const [list, setList] = useState<Project[]>([]);
-
+  const client = useHttp();
   useEffect(() => {
-    fetch(
-      `${apiUrl}/projects?${qs.stringify(cleanObject(debouncedParam))}`
-    ).then(async (resp) => {
-      if (resp.ok) {
-        setList(await resp.json());
-      }
-    });
+    client("projects", { data: cleanObject(debouncedParam) }).then(setList);
   }, [debouncedParam]);
 
   useMount(() => {
-    fetch(`${apiUrl}/users`).then(async (resp) => {
-      if (resp.ok) {
-        setUsers(await resp.json());
-      }
-    });
+    client("users").then(setUsers);
   });
-
-  // const { value, add, removeIndex, clear } = useArray<User>([]);
-  // const addUser = () => {
-  //   add({
-  //     name: `name-${Math.random()}`,
-  //     id: Math.random() * 10
-  //   })
-  // }
 
   return (
     <div>
