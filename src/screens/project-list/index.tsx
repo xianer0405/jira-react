@@ -3,7 +3,7 @@ import qs from "qs";
 
 import { SearchPanel } from "./search-panel";
 import { PrjectList } from "./list";
-import { cleanObject, useDebounce, useMount, useArray } from "../../utils";
+import { cleanObject, useDebounce, useMount } from "../../utils";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
